@@ -18,6 +18,7 @@ export interface User {
 
 export interface CalEvent {
   id?: number;
+  isHoliday?: boolean;
   title: string;
   start: Date;
   end: Date;

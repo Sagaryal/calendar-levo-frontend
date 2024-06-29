@@ -4,11 +4,12 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
-import { CalEvent, UserEvent } from "../../types";
+import { CalEvent, User, UserEvent } from "../../types";
 import { createUserEvent, deleteUserEvent, updateUserEvent } from "../../api";
 
 export interface ModalProps {
   show: boolean;
+  currentUser: User | null;
   editEventData: CalEvent | null;
   handleClose: () => void;
   refetchEvents: () => void;
@@ -16,6 +17,7 @@ export interface ModalProps {
 
 const FormModal: React.FC<ModalProps> = ({
   show,
+  currentUser,
   editEventData,
   handleClose,
   refetchEvents,
