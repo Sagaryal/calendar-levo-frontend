@@ -27,8 +27,8 @@ const localizer = dateFnsLocalizer({
 
 const eventPropGetter = (
   event: CalEvent,
-  start: Date,
-  end: Date,
+  _start: Date,
+  _end: Date,
   isSelected: boolean
 ) => {
   const style = {
@@ -210,7 +210,6 @@ const CalendarPage: React.FC = () => {
 
         <FormModal
           show={show}
-          currentUser={currentUser}
           editEventData={currentEvent}
           handleClose={handleClose}
           refetchEvents={fetchEventsData}

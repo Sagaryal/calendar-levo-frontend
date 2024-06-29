@@ -76,7 +76,6 @@ export const updateUserEvent = async (
         start_time: event.start_time,
         end_time: event.end_time,
         description: event.description,
-        participants: event.participants,
       },
       {
         headers: {
