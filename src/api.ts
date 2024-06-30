@@ -2,7 +2,7 @@ import axios from "axios";
 import { UserEvent, User, UpdateUserEvent, CreateUserEvent } from "./types";
 import { getLocalUser } from "./utils";
 
-const BACKEND_URL = "https://levo-calendar-backend-m5xqhgt57q-el.a.run.app/api";
+const BACKEND_URL = "https://levo-calendar-frontend.fly.dev/api";
 
 export const fetchEvents = async (): Promise<UserEvent[]> => {
   try {
