@@ -9,3 +9,14 @@ export const getLocalUser = (): User | null => {
 
   return null;
 };
+
+export const changeTimezone = (date: Date, timeZone: string) => {
+  const tDate = new Date(
+    date.toLocaleString("en-US", {
+      timeZone,
+    })
+  );
+
+  const diff = date.getTime() - tDate.getTime();
+  return new Date(date.getTime() + diff);
+};

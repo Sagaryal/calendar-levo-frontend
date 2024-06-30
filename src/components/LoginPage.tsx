@@ -16,7 +16,6 @@ const LoginPage: React.FC = () => {
 
     try {
       const user: User = await createOrGetUser(email);
-      console.log({ user });
       localStorage.setItem("user", JSON.stringify(user));
       navigate("/");
     } catch (error) {

@@ -3,9 +3,11 @@ import { format, parseISO } from "date-fns";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
+import timezones from "timezones-list";
 import Form from "react-bootstrap/Form";
-import { CalEvent, UserEvent } from "../../types";
+import { CalEvent } from "../../types";
 import { createUserEvent, deleteUserEvent, updateUserEvent } from "../../api";
+import { changeTimezone } from "../../utils";
 
 export interface ModalProps {
   show: boolean;
@@ -27,13 +29,17 @@ const FormModal: React.FC<ModalProps> = ({
     description: "",
   };
 
+  const initialMyOwnTimeZone: string =
+    Intl.DateTimeFormat().resolvedOptions().timeZone;
+
   const [event, setEvent] = useState<CalEvent>(initialState);
+  const [selectedTimezone, setSelectedTimezone] =
+    useState(initialMyOwnTimeZone);
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
-    console.log({ value });
     setEvent((prevState) => ({ ...prevState, [name]: value }));
   };
 
@@ -54,55 +60,54 @@ const FormModal: React.FC<ModalProps> = ({
 
   const handleEdit = async () => {
     try {
-      const response: UserEvent = await updateUserEvent({
+      await updateUserEvent({
         id: event.id!,
         title: event.title,
         start_time: event.start,
         end_time: event.end,
         description: event.description,
       });
-      console.log({ response });
       close();
       refetchEvents();
     } catch (err: any) {
-      console.log("Error updating the event: ", err);
-      alert(err.response.data.detail);
+      console.error("Error updating the event: ", err);
+      alert(err.response.data.detail.message);
     }
   };
 
   const handleCreate = async () => {
     try {
-      const response = await createUserEvent({
+      const start = changeTimezone(event.start, selectedTimezone);
+      const end = changeTimezone(event.end, selectedTimezone);
+
+      await createUserEvent({
         title: event.title,
-        start_time: event.start,
-        end_time: event.end,
+        start_time: start,
+        end_time: end,
         description: event.description,
       });
-      console.log({ response });
       close();
       refetchEvents();
     } catch (err: any) {
-      console.log("Error creating the event: ", err);
-      alert(err.response.data.detail);
+      console.error("Error creating the event: ", err);
+      alert(err.response.data.detail.message);
     }
   };
 
   const handleDeleteEvent = async () => {
     try {
       if (window.confirm("Are you sure you want to delete this event?")) {
-        const response: UserEvent = await deleteUserEvent(event.id!);
-        console.log({ response });
+        await deleteUserEvent(event.id!);
         close();
         refetchEvents();
       }
     } catch (err: any) {
-      console.log("Error deleting the event: ", err);
-      alert(err.response.data.detail);
+      console.error("Error deleting the event: ", err);
+      alert(err.response.data.detail.message);
     }
   };
 
   useEffect(() => {
-    console.log("useffect", editEventData);
     if (editEventData) {
       setEvent(editEventData);
     }
@@ -136,13 +141,12 @@ const FormModal: React.FC<ModalProps> = ({
               name="start"
               required
               value={format(event.start, "yyyy-MM-dd'T'HH:mm")}
-              onChange={(e) => {
-                console.log(e.target.value);
+              onChange={(e) =>
                 setEvent((prevState) => ({
                   ...prevState,
                   start: parseISO(e.target.value),
-                }));
-              }}
+                }))
+              }
             />
           </Form.Group>
 
@@ -160,6 +164,22 @@ const FormModal: React.FC<ModalProps> = ({
                 }))
               }
             />
+          </Form.Group>
+
+          <Form.Group className="mb-3" controlId="formTimezone">
+            <Form.Label>Timezone</Form.Label>
+            <Form.Select
+              value={selectedTimezone}
+              onChange={(e) => {
+                setSelectedTimezone(e.target.value);
+              }}
+            >
+              {timezones.map((tz) => (
+                <option key={tz.tzCode} value={tz.tzCode}>
+                  {tz.label}
+                </option>
+              ))}
+            </Form.Select>
           </Form.Group>
 
           <Form.Group className="mb-3" controlId="description">

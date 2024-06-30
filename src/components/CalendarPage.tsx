@@ -63,26 +63,19 @@ const CalendarPage: React.FC = () => {
 
   const handleSelectEvent = async (event: CalEvent) => {
     if (!event.isHoliday) {
-      console.log("handle selected");
-      console.log(event);
       setShow(true);
       setCurrentEvent(event);
     }
   };
 
-  const handleSelectSlot = (slotInfo: any) => {
-    console.log("handle select SLOT");
-    console.log(slotInfo);
+  const handleSelectSlot = (_slotInfo: any) => {
     setShow(true);
   };
-
-  console.log({ currentEvent });
 
   const fetchEventsData = async () => {
     try {
       const user: User = await fetchUser(currentUser!.id);
       const userEvents: UserEvent[] = user.events;
-      console.log(user);
       const calEvents: CalEvent[] = userEvents.map<CalEvent>((event) => ({
         start: new Date(event.start_time),
         end: new Date(event.end_time),
@@ -165,8 +158,6 @@ const CalendarPage: React.FC = () => {
     }
   }, [currentUser]);
 
-  console.log({ events });
-  console.log({ holidays });
   return (
     <div className="flex flex-col items-center justify-center">
       <div className="flex items-center justify-between w-full px-4 py-8">
