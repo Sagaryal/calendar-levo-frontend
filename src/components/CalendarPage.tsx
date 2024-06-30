@@ -151,13 +151,13 @@ const CalendarPage: React.FC = () => {
     if (currentUser) {
       fetchCountries();
     }
-  }, []);
+  }, [currentUser]);
 
   useEffect(() => {
     if (currentUser) {
       fetchHolidays(currentYear, selectedCountry);
     }
-  }, [currentYear, selectedCountry]);
+  }, [currentYear, selectedCountry, currentUser]);
 
   useEffect(() => {
     if (currentUser) {
